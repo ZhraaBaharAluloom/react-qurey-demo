@@ -1,6 +1,5 @@
 import { Stack } from "expo-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useSyncQueriesExternal } from "react-query-external-sync";
 import React from "react";
 
 export default function RootLayout() {
