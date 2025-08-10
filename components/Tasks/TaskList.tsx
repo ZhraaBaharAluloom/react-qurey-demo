@@ -1,40 +1,29 @@
 import React from "react";
-import { ActivityIndicator, ScrollView, StyleSheet, View } from "react-native";
-
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { deleteTodo, getTodos } from "@/api/todo";
+import { ScrollView, StyleSheet, View } from "react-native";
 
 import TaskItem from "@/components/Tasks/TaskItem";
+import { Todo } from "@/data/todos";
+import axios from "axios";
 
-export const TaskList = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["todos"],
-    queryFn: getTodos,
-  });
+interface TaskListProps {
+  todoList: Todo[];
+  setTodoList: (todoList: Todo[]) => void;
+}
 
-  const { mutate } = useMutation({
-    mutationKey: ["deleteTodo"],
-    mutationFn: deleteTodo,
-    onError: (err) => {
-      console.log("Something went wrong", err);
-    },
-  });
-
+export const TaskList = ({ todoList, setTodoList }: TaskListProps) => {
   const handleDelete = async (id: number) => {
-    mutate(id);
+    try {
+      await axios.delete(`https://dummyjson.com/todos/${id}`);
+      const filteredTodos = todoList.filter((todo) => todo.id !== id);
+      setTodoList(filteredTodos);
+    } catch (error) {
+      console.log("🚀 ~ handleDelete ~ error:", error);
+    }
   };
-
-  if (isLoading) {
-    return (
-      <View>
-        <ActivityIndicator color={"green"} />
-      </View>
-    );
-  }
 
   return (
     <ScrollView contentContainerStyle={styles.todoList}>
-      {data?.map((todo) => {
+      {todoList?.map((todo) => {
         return (
           <TaskItem key={todo.id} todo={todo} handleDelete={handleDelete} />
         );

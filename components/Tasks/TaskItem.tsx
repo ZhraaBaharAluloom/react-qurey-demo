@@ -2,10 +2,8 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Checkbox } from "expo-checkbox";
 
-import { updateTodo } from "@/api/todo";
 import { Todo } from "@/data/todos";
 
 interface TaskItemProps {
@@ -14,25 +12,6 @@ interface TaskItemProps {
 }
 
 const TaskItem = ({ todo, handleDelete }: TaskItemProps) => {
-  const queryClient = useQueryClient();
-
-  const { mutate } = useMutation({
-    mutationKey: ["updateTodo"],
-    mutationFn: updateTodo,
-    onError: (err) => console.log("Something went wrong", err),
-    onSuccess: () => {
-      console.log("Updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["listTodo"] });
-    },
-  });
-
-  const handleUpdate = async (id: number, value: boolean) => {
-    mutate({
-      id,
-      completed: value,
-    });
-  };
-
   return (
     <View
       style={{
@@ -45,15 +24,13 @@ const TaskItem = ({ todo, handleDelete }: TaskItemProps) => {
       <View
         style={{
           flexDirection: "row",
+          flexWrap: "wrap",
           gap: 5,
           alignItems: "center",
           justifyContent: "space-between",
         }}
       >
-        <Checkbox
-          value={todo.completed}
-          onValueChange={(value) => handleUpdate(todo.id, value)}
-        />
+        <Checkbox value={todo.completed} />
         <Text style={[styles.todo, todo.completed && styles.done]}>
           {todo.todo}
         </Text>
@@ -61,7 +38,7 @@ const TaskItem = ({ todo, handleDelete }: TaskItemProps) => {
       <MaterialIcons
         name="delete-forever"
         size={24}
-        color="black"
+        color="red"
         onPress={() => handleDelete(todo.id)}
       />
     </View>
