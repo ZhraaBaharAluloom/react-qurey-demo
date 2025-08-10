@@ -1,21 +1,9 @@
 import React, { useState } from "react";
-import { TaskList } from "@/components/Tasks/TaskList";
 import { StyleSheet, Text, TextInput, View, Button } from "react-native";
-import axios from "axios";
-import {
-  useQuery,
-  useMutation,
-  useQueryClient,
-  QueryClient,
-} from "@tanstack/react-query";
-import { addTodo, updateTodo } from "@/api/todo";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-type Todo = {
-  id: number;
-  todo: string;
-  completed: boolean;
-  userId: number;
-};
+import { TaskList } from "@/components/Tasks/TaskList";
+import { addTodo } from "@/api/todo";
 
 export default function Index() {
   const queryClient = useQueryClient();
